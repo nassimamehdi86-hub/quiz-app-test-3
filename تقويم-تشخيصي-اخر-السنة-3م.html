@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>التقويم التشخيصي | الثالثة متوسط</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-deep:#04191c;
+  --bg-mid:#0c2e2c;
+  --panel:#0f3733;
+  --gold:#4fd1a5;
+  --gold-bright:#8af0c6;
+  --ink:#eafaf3;
+  --ink-dim:#9fc9bd;
+  --ok:#5fbf8a;
+  --bad:#e07a6b;
+  --border:rgba(79,209,165,.28);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  font-family:'Tajawal',sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(79,209,165,.10), transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(30,140,190,.16), transparent 45%),
+    linear-gradient(160deg,var(--bg-deep),var(--bg-mid) 55%,var(--bg-deep));
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  pointer-events:none;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.5), transparent),
+    radial-gradient(1.5px 1.5px at 70% 20%, rgba(255,255,255,.4), transparent),
+    radial-gradient(1.5px 1.5px at 40% 70%, rgba(255,255,255,.35), transparent),
+    radial-gradient(2px 2px at 90% 60%, rgba(255,255,255,.4), transparent),
+    radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,.3), transparent),
+    radial-gradient(1.5px 1.5px at 10% 85%, rgba(255,255,255,.35), transparent);
+  opacity:.5;
+  z-index:0;
+}
+.geo{
+  position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.05;
+  background-image:
+    repeating-linear-gradient(45deg, var(--gold) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(-45deg, var(--gold) 0 1px, transparent 1px 46px);
+}
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:18px 16px 60px;}
+
+/* ---------- header ---------- */
+.top{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-bottom:18px;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+}
+.brand .mark{
+  width:38px;height:38px;border-radius:50%;
+  border:1.5px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gold-bright);font-family:'Amiri',serif;font-weight:700;font-size:18px;
+  box-shadow:0 0 14px rgba(79,209,165,.35);
+}
+.brand h1{font-family:'Amiri',serif;font-size:1.05rem;color:var(--gold-bright);font-weight:700;}
+.brand span{display:block;font-size:.72rem;color:var(--ink-dim);margin-top:1px;}
+
+/* ---------- start screen ---------- */
+.screen{display:none;}
+.screen.active{display:block;animation:fade .5s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.start-card{
+  background:linear-gradient(180deg, rgba(15,55,51,.9), rgba(9,35,33,.9));
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:38px 26px;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+  position:relative;overflow:hidden;
+}
+.start-card::before{
+  content:"";position:absolute;top:-40%;left:50%;transform:translateX(-50%);
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle, rgba(79,209,165,.25), transparent 70%);
+  pointer-events:none;
+}
+.start-card h2{font-family:'Amiri',serif;font-size:1.5rem;color:var(--gold-bright);margin-bottom:6px;position:relative;}
+.start-card p{color:var(--ink-dim);font-size:.92rem;margin-bottom:22px;position:relative;line-height:1.9;}
+.start-instruction{
+  position:relative;
+  border:1.5px solid var(--gold);
+  border-radius:10px;
+  background:rgba(79,209,165,.08);
+  color:var(--gold-bright);
+  font-size:.85rem;
+  font-weight:700;
+  padding:10px 14px;
+  margin-bottom:16px;
+  line-height:1.8;
+}
+.meta-row{display:flex;justify-content:center;gap:18px;margin-bottom:26px;flex-wrap:wrap;position:relative;}
+.meta-chip{
+  border:1px solid var(--border);border-radius:999px;
+  padding:6px 16px;font-size:.78rem;color:var(--ink-dim);
+}
+.meta-chip b{color:var(--gold-bright);}
+input#nameInput{
+  width:100%;max-width:360px;
+  background:rgba(4,25,28,.6);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  color:var(--ink);
+  font-family:'Tajawal',sans-serif;
+  font-size:1rem;text-align:center;
+  outline:none;margin-bottom:16px;
+  transition:.25s;
+}
+input#nameInput:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(79,209,165,.12);}
+.btn{
+  border:none;cursor:pointer;
+  font-family:'Tajawal',sans-serif;font-weight:700;
+  border-radius:12px;
+  transition:.2s;
+}
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold-bright),var(--gold));
+  color:#04241b;
+  padding:14px 40px;font-size:1rem;
+  box-shadow:0 8px 24px rgba(79,209,165,.3);
+}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(79,209,165,.4);}
+.btn-gold:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.err{color:var(--bad);font-size:.8rem;height:16px;margin-bottom:6px;}
+
+/* ---------- quiz layout ---------- */
+.progress-wrap{margin-bottom:16px;}
+.progress-labels{display:flex;justify-content:space-between;font-size:.8rem;color:var(--ink-dim);margin-bottom:6px;}
+.progress-labels b{color:var(--gold-bright);}
+.progress-bar{height:8px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;border:1px solid var(--border);}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-bright));border-radius:999px;transition:width .4s ease;}
+
+.layout{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:880px){.layout{grid-template-columns:1fr 1.15fr;align-items:start;}}
+
+.passage-panel{
+  background:linear-gradient(180deg, rgba(12,46,42,.92), rgba(6,26,24,.92));
+  border:1px solid var(--border);border-radius:16px;
+  padding:18px 18px 20px;
+  position:sticky;top:12px;
+  max-height:78vh;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.passage-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;flex-shrink:0;
+}
+.passage-head h3{font-family:'Amiri',serif;color:var(--gold-bright);font-size:1rem;}
+.toggle-passage{
+  display:none;
+  background:transparent;border:1px solid var(--border);color:var(--gold-bright);
+  border-radius:8px;padding:6px 10px;font-size:.78rem;cursor:pointer;
+}
+@media(max-width:879px){
+  .toggle-passage{display:inline-block;}
+  .passage-panel{position:relative;top:0;max-height:none;}
+  .passage-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+  .passage-body.open{max-height:2000px;}
+}
+.passage-body{overflow-y:auto;line-height:2.3;font-family:'Tajawal',sans-serif;font-weight:500;font-size:1.05rem;color:#eafaf3;padding-left:4px;}
+.passage-body::-webkit-scrollbar{width:6px;}
+.passage-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px;}
+.passage-body p{margin-bottom:18px;text-align:justify;letter-spacing:.01em;}
+.passage-body u{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;font-weight:900;color:inherit;}
+.passage-source{color:var(--ink-dim);font-size:.72rem;margin-top:8px;border-top:1px dashed var(--border);padding-top:8px;}
+
+.question-panel{
+  background:linear-gradient(180deg, rgba(15,55,51,.92), rgba(9,35,33,.92));
+  border:1px solid var(--border);border-radius:16px;
+  padding:22px 20px;
+  min-height:340px;
+  display:flex;flex-direction:column;
+}
+.q-eyebrow{color:var(--ink-dim);font-size:.75rem;letter-spacing:.03em;margin-bottom:8px;}
+.q-eyebrow b{color:var(--gold-bright);}
+.q-text{font-size:1.08rem;line-height:1.85;margin-bottom:20px;font-weight:500;}
+.options{display:flex;flex-direction:column;gap:10px;flex:1;}
+.opt{
+  display:flex;align-items:center;gap:12px;
+  border:1.5px solid var(--border);
+  background:rgba(4,25,28,.4);
+  border-radius:12px;padding:13px 14px;
+  cursor:pointer;text-align:right;
+  font-family:'Tajawal',sans-serif;font-size:.95rem;color:var(--ink);
+  transition:.18s;
+}
+.opt:hover{border-color:var(--gold);background:rgba(79,209,165,.07);}
+.opt .num{
+  flex-shrink:0;width:28px;height:28px;border-radius:50%;
+  border:1.5px solid var(--gold);color:var(--gold-bright);
+  display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;
+}
+.opt.selected{border-color:var(--gold);background:rgba(79,209,165,.12);}
+.opt.correct{border-color:var(--ok);background:rgba(95,191,138,.15);}
+.opt.correct .num{border-color:var(--ok);color:var(--ok);}
+.opt.wrong{border-color:var(--bad);background:rgba(224,122,107,.15);}
+.opt.wrong .num{border-color:var(--bad);color:var(--bad);}
+.opt.disabled{cursor:default;pointer-events:none;}
+.opt.dim{opacity:.45;}
+
+.footer-row{
+  display:flex;justify-content:space-between;align-items:center;margin-top:18px;
+}
+.hint{font-size:.78rem;color:var(--ink-dim);}
+.btn-next{
+  background:linear-gradient(135deg,var(--gold-bright),var(--gold));
+  color:#04241b;padding:11px 26px;font-size:.92rem;border-radius:10px;
+  opacity:0;pointer-events:none;transition:.25s;
+}
+.btn-next.show{opacity:1;pointer-events:auto;}
+
+/* ---------- result screen ---------- */
+.result-hero{
+  text-align:center;background:linear-gradient(180deg, rgba(15,55,51,.92), rgba(9,35,33,.92));
+  border:1px solid var(--border);border-radius:18px;padding:34px 20px;margin-bottom:20px;
+  position:relative;overflow:hidden;
+}
+.result-hero::before{
+  content:"";position:absolute;top:-50%;left:50%;transform:translateX(-50%);
+  width:340px;height:340px;border-radius:50%;
+  background:radial-gradient(circle, rgba(79,209,165,.22), transparent 70%);
+}
+.score-ring{
+  width:150px;height:150px;border-radius:50%;margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  position:relative;
+  background:conic-gradient(var(--gold-bright) calc(var(--pct)*1%), rgba(255,255,255,.08) 0);
+}
+.score-ring::before{
+  content:"";position:absolute;inset:9px;border-radius:50%;
+  background:var(--bg-mid);
+}
+.score-ring .num{position:relative;font-size:1.9rem;font-weight:900;color:var(--gold-bright);}
+.score-ring .lbl{position:relative;font-size:.75rem;color:var(--ink-dim);}
+.result-hero h2{font-family:'Amiri',serif;font-size:1.3rem;color:var(--gold-bright);position:relative;}
+.result-hero p{color:var(--ink-dim);font-size:.88rem;margin-top:4px;position:relative;}
+
+.review-list{display:flex;flex-direction:column;gap:10px;}
+.review-item{
+  border:1px solid var(--border);border-radius:12px;padding:14px 16px;
+  background:rgba(9,35,33,.7);
+}
+.review-item .rq{font-size:.9rem;margin-bottom:8px;line-height:1.7;}
+.review-item .rq b{color:var(--gold-bright);}
+.review-ans{font-size:.82rem;display:flex;flex-direction:column;gap:4px;}
+.review-ans .ok{color:var(--ok);}
+.review-ans .bad{color:var(--bad);}
+.review-item.correct{border-right:3px solid var(--ok);}
+.review-item.incorrect{border-right:3px solid var(--bad);}
+.review-item.opinion{border-right:3px solid var(--gold);}
+.actions-row{display:flex;justify-content:center;gap:12px;margin-top:22px;flex-wrap:wrap;}
+.btn-outline{
+  background:transparent;border:1.5px solid var(--gold);color:var(--gold-bright);
+  padding:12px 26px;border-radius:10px;font-size:.9rem;
+}
+footer.credit{text-align:center;color:var(--ink-dim);font-size:.72rem;margin-top:36px;opacity:.7;}
+
+/* ---------- printable answer sheet ---------- */
+#screenSheet{background:transparent;}
+.sheet-toolbar{display:flex;justify-content:center;gap:12px;margin-bottom:18px;}
+.sheet-paper{
+  background:#fff;color:#111;
+  width:100%;max-width:800px;margin:0 auto;
+  padding:22px 22px 26px;
+  border:2px solid #0f5c4c;border-radius:4px;
+  font-family:'Tajawal',sans-serif;
+}
+.sheet-head{border:2px solid #0f5c4c;border-radius:4px;text-align:center;padding:8px 6px;margin-bottom:14px;}
+.sheet-head h1{font-size:1.05rem;color:#0f5c4c;font-weight:900;}
+.sheet-head h2{font-size:.85rem;color:#333;font-weight:700;margin-top:2px;}
+.sheet-info{display:flex;justify-content:space-between;gap:16px;margin-bottom:10px;flex-wrap:wrap;}
+.sheet-info div{font-size:.92rem;font-weight:700;color:#111;}
+.sheet-info b{color:#0f5c4c;}
+.sheet-note{font-size:.76rem;color:#444;background:#eef7f3;border:1px solid #a9d9c6;border-radius:6px;padding:8px 10px;margin-bottom:14px;line-height:1.7;}
+.sheet-grid{display:flex;gap:14px;border:1px solid #0f5c4c;}
+.sheet-col{flex:1;}
+.sheet-col table{width:100%;border-collapse:collapse;}
+.sheet-col td,.sheet-col th{border:1px solid #999;text-align:center;padding:4px 2px;font-size:.8rem;}
+.sheet-col th{background:#e2f0ea;color:#0f5c4c;font-weight:700;}
+.sheet-qnum{width:18%;font-weight:800;background:#f4faf7;}
+.sheet-bubble{width:15%;font-size:1rem;}
+.sheet-bubble.filled{color:#0f5c4c;font-weight:900;}
+.sheet-point{width:20%;background:#f6fdf9;font-weight:900;font-size:1rem;}
+.sheet-point{color:#333;}
+.sheet-divider{width:2px;background:#0f5c4c;}
+.sheet-foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:10px;border-top:1px dashed #999;}
+.sheet-grade{border:2px solid #0f5c4c;border-radius:6px;padding:8px 22px;font-weight:800;font-size:.92rem;color:#0f5c4c;}
+.sheet-credit{font-size:.7rem;color:#777;}
+@media print{
+  body *{visibility:hidden;}
+  #screenSheet, #screenSheet *{visibility:visible;}
+  #screenSheet{position:absolute;inset:0;background:#fff;padding:0;}
+  .sheet-toolbar{display:none;}
+  .sheet-paper{border:2px solid #0f5c4c;max-width:100%;box-shadow:none;}
+}
+</style>
+</head>
+<body>
+<div class="geo"></div>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <div class="mark">✦</div>
+      <div>
+        <h1>التقويم التشخيصي</h1>
+        <span>اللغة العربية — آخر السنة الثالثة متوسط</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- START -->
+  <div class="screen active" id="screenStart">
+    <div class="start-card">
+      <h2>مرحبا بك أيها التلميذ المجتهد</h2>
+      <div class="start-instruction">اِقرإ النّصّ ثمّ أجب: (تُسلَّم آخر ورقة مع تحديد الإجابات بما يتوافق مع رقم السّؤال)</div>
+      <p>اقرأ النص جيدا، ثم أجب عن 41 سؤالا تقيس فهمك للنص والقواعد.<br>يبقى النص أمامك طوال الاختبار لمراجعته وقتما شئت.</p>
+      <div class="meta-row">
+        <div class="meta-chip">عدد الأسئلة: <b>41</b></div>
+        <div class="meta-chip">المستوى: <b>3 متوسط</b></div>
+      </div>
+      <input type="text" id="nameInput" placeholder="اكتب اسمك ولقبك هنا" maxlength="40">
+      <div class="err" id="nameErr"></div>
+      <button class="btn btn-gold" onclick="startQuiz()">ابدأ الاختبار</button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="screenQuiz">
+    <div class="progress-wrap">
+      <div class="progress-labels"><span>السؤال <b id="qIndexLbl">1</b> من 41</span><span id="scoreLive"></span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:2%"></div></div>
+    </div>
+    <div class="layout">
+      <div class="passage-panel">
+        <div class="passage-head">
+          <h3>📖 النص</h3>
+          <button class="toggle-passage" id="togglePassageBtn" onclick="togglePassage()">إخفاء / إظهار</button>
+        </div>
+        <div class="passage-body" id="passageBody"></div>
+      </div>
+      <div class="question-panel">
+        <div class="q-eyebrow">السؤال <b id="qNumTag">1</b> / 41</div>
+        <div class="q-text" id="qText"></div>
+        <div class="options" id="optionsWrap"></div>
+        <div class="footer-row">
+          <div class="hint" id="hintText">اختر إجابة</div>
+          <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()">التالي ←</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="screenResult">
+    <div class="result-hero">
+      <div class="score-ring" id="scoreRing" style="--pct:0"><div class="num" id="scoreNum">0</div><div class="lbl">من <span id="scoreTotalLbl">41</span></div></div>
+      <h2>انتهى الاختبار</h2>
+      <p id="resultMsg"></p>
+    </div>
+    <div class="actions-row">
+      <button class="btn btn-gold" onclick="openAnswerSheet()">📄 ورقة الإجابة للطّباعة</button>
+      <button class="btn btn-outline" onclick="restartQuiz()">إعادة الاختبار</button>
+    </div>
+  </div>
+
+  <!-- ANSWER SHEET -->
+  <div class="screen" id="screenSheet">
+    <div class="sheet-toolbar">
+      <button class="btn btn-gold" onclick="window.print()">🖨️ طباعة / تحميل PDF</button>
+      <button class="btn btn-outline" onclick="showScreen('screenResult')">← رجوع للنتيجة</button>
+    </div>
+    <div class="sheet-paper">
+      <div class="sheet-head">
+        <h1>التّقويم التّشخيصي لتلاميذ الثّالثة متوسّطة (آخر السّنة)</h1>
+        <h2>إعداد الأستاذ: محمّد أبو شاكر لعبودي</h2>
+      </div>
+      <div class="sheet-info">
+        <div><b>الاسم واللّقب:</b> <span id="sheetName"></span></div>
+        <div><b>القسم:</b> 3 م</div>
+      </div>
+      <div class="sheet-note">تُظهر هذه الورقة الإجابات التي اختارها التّلميذ أثناء الاختبار التّفاعلي (الدّائرة المظلّلة ⬤)، والنّقطة النّهائيّة، لمقارنتها مباشرة مع الأستاذ في القسم.</div>
+      <div class="sheet-grid">
+        <div class="sheet-col" id="sheetColRight"></div>
+        <div class="sheet-divider"></div>
+        <div class="sheet-col" id="sheetColLeft"></div>
+      </div>
+      <div class="sheet-foot">
+        <div class="sheet-grade">العلامة: <span id="sheetGrade"></span> / 41</div>
+        <div class="sheet-credit">صفحة إجابة مولّدة آليا حسب اختيارات التّلميذ</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="credit">إعداد الأستاذ محمد أبو شاكر لعبودي — التعليم المتوسط</footer>
+</div>
+
+<script>
+/* ---------------- passage text ---------------- */
+const passageHTML = `
+<p>عندما عاد (توماس أديسون) وهو طفل صغير إلى بيته، قال لأمّه: هذه رسالة لك من إدارة المدرسة، غمرت بريق عينيها <u>الدّموع</u> وهي تقرأ له: "ابنُك عبقريّ, والمدرسة صغيرة على قدراته، عليك أن تُعلّميه في البيت".</p>
+<p>مرّت السّنوات وتُوُفّيت أمّ أديسون الذي تحوّل إلى أعظم مخترع في التّاريخ البشريّ، وفي أحد الأيّام وهو يبحثُ في خزانة والدته، وجد رسالة كان نصّها:" ابنُك غبيّ جدا، فمن صباح الغد لن ندخله المدرسة"، بكى أديسون لساعات طويلة، ثم كتب في دفتر مذكّراته:" أديسون كان طفلا <u>غبيّا</u>، ولكن بفضل والدته الرّائعة تحوّل إلى عبقريّ. كثير من الفاشلين هم أشخاص لم يدركوا قربهم من النّجاح عندما قرّروا الانسحاب".</p>
+<p>يُعدّ النّجاح والتّفوّق من الأولويّات التي يُفكّر فيها الوالدان عند دخول ابنهما إلى المدرسة، فمنذ اليوم الأوّل لالتحاقه بالمدرسة تبدأ الأحلام، وتتعدّد <u>التّوجيهات</u>، وتكثر قائمة الطّلبات من الأهل: لا تكثر من مشاهدة التلفاز، لا تسهر طويلا، لا تتأخّر في اللّعب مع رفاقك، افتح كتابك، وادرسْ، ماذا تعلّمت في المدرسة اليوم؟ ما واجباتك المدرسيّة ليوم غد؟ وكأنّ كلّ ما يترتّب على الطّالب فعله هو الدّراسة والمذاكرة، وعليه أن <u>ينسى</u> كلّ ما عدا ذلك خلال العام الدّراسيّ، ويُرحَّل اهتماماته كلّها وهواياته الأخرى إلى فصل الصّيف، وما على هذا الطّالب المسكين سوى الاجتهاد من أجل تحصيل التّفوّق الدّراسيّ.</p>
+<p>ولكم أن <u>تتخيّلوا</u> مقدار خيبة الأمل التي يُصاب بها الوالدان حين يعلمان أنّ فلذة كبدهما <u>ضعيف</u> التّحصيل، عندها تكون الكارثة في البيت، وتبدأ المحاولات الحثيثة لحشو دماغ هذا المسكين بالمعلومات على اختلافها ويصبح البيت محجّا للمدرّسين الخصوصيّين.</p>
+<p>هذه والدة توماس لم <u>تبك</u> نائحة عليه عندما وصلتها الرّسالة، بل شدّت على يديه وآمنت بقدراته الإبداعيّة الأخرى بكلّ محبّة وحنان، وهكذا تحوّل التّبلّد الدّراسيّ إلى عبقريّة فذّة، ولعلّ كلّ والدة تلمس في طفلها الفشل الدّراسي تجد عزاءها في قصّة أديسون.</p>
+<div class="passage-source">كتاب اللّغة العربيّة لدولة فلسطين، الصّفّ الثّامن، الجزء 1، ص 35 (بتصرّف)</div>
+`;
+
+/* ---------------- questions data ----------------
+   correct: 0-based index (0=①..3=④), or an array when several options count as correct (opinion questions) */
+const questions = [
+{q:'حدّد العنوان المناسب للنّص.', o:['الحياة المدرسيّة','جهاد امرأة','مشكلات الشّباب','الرّسوب المدرسي'], correct:1},
+{q:'توماس أديسون هو مخترع:', o:['الكهرباء','الطّائرات','الهاتف','الأشعّة السّينيّة'], correct:0},
+{q:'جاء في الرّسالة الحقيقيّة أنّ أديسون:', o:['ذكي','مجتهد','عبقري','غبي'], correct:3},
+{q:'كان موقف أمّ توماس عند وصول الرّسالة:', o:['الانهيار','اليأس','آمنت بقدراته','ضربته'], correct:2},
+{q:'يُصاب الوالدان حين يعلمان أنّ فلذة كبدهما ضعيف التّحصيل بـ:', o:['خيبة الأمل','الدّهشة','اليأس','النّدم'], correct:0},
+{q:'معنى كلمة "غمرت": (غمرت بريق عينيها الدّموع)', o:['مسّت','ملأت','عظمت','طردت'], correct:1},
+{q:'معنى كلمة "التّوجيهات": (وتتعدّد التّوجيهات)', o:['الاتّجاهات','الإرشادات','اللّوم','الأدلّة'], correct:1},
+{q:'معنى كلمة "التّبلّد": (وهكذا تحوّل التّبلّد الدّراسيّ)', o:['الذّكاء','الاجتهاد','العبقريّة','الغباء'], correct:3},
+{q:'اختر الكلمة الدّخيلة التي لا تمثّل شرحا لكلمة "الحثيثة": (وتبدأ المحاولات الحثيثة)', o:['المتريّثة','السّريعة','العاجلة','المتسرّعة'], correct:0},
+{q:'ضدّ كلمة "النّجاح" في النّص هي:', o:['الإبداعيّة','مخترع','الفشل','التّبلّد'], correct:2},
+{q:'إعراب كلمة "الدّموع" هو:', o:['خبر مرفوع وعلامة رفعه الضّمّة الظّاهرة على آخره.','فاعل مؤخّر مرفوع وعلامة رفعه الضّمّة الظّاهرة على آخره.','نائب فاعل مرفوع وعلامة رفعه الضّمّة الظّاهرة على آخره.','مفعول به منصوب وعلامة نصبه الفتحة الظّاهرة على آخره.'], correct:1},
+{q:'إعراب كلمة "تتخيّلوا" هو:', o:['فعل مضارع منصوب وعلامة نصبه الفتحة الظّاهرة على آخره.','فعل مضارع مرفوع وعلامة رفعه حذف النّون.','فعل مضارع منصوب بـ: أن المضمرة وعلامة نصبه حذف النّون لأنّه من الأفعال الخمسة وواو الجماعة ضمير متّصل في محلّ رفع فاعل.','فعل مضارع منصوب بـ: أن وعلامة نصبه حذف النّون لأنّه من الأفعال الخمسة وواو الجماعة ضمير متّصل مبني في محلّ رفع فاعل.'], correct:3},
+{q:'إعراب كلمة "تبك" هو:', o:['فعل مضارع مجرور وعلامة جرّه الكسرة الظّاهرة على آخره.','فعل مضارع مرفوع وعلامة رفعه الضّمّة المقدّرة على الكاف.','فعل مضارع مجزوم بـ: لم وعلامة جزمه السّكون، والفاعل ضمير مستتر تقديره "هي".','فعل مضارع مرفوع وعلامة رفعه الضّمّة المقدّرة على الياء المحذوفة، والفاعل ضمير مستتر تقديره "هي".'], correct:2},
+{q:'إعراب كلمة "ضعيف" هو:', o:['خبر أنّ مرفوع وعلامة رفعه الضّمّة الظّاهرة على آخره وهو مضاف.','خبر أنّ منصوب وعلامة نصبه الفتحة الظّاهرة على آخره وهو مضاف.','مبتدأ مرفوع وعلامة رفعه الضّمّة الظّاهرة على آخره.','مضاف إليه مجرور وعلامة جرّه الكسرة الظّاهرة على آخره.'], correct:0},
+{q:'إعراب كلمة "غبيّا" هو:', o:['نعت منصوب وعلامة نصبه الفتحة الظّاهرة على آخره.','مفعول به منصوب وعلامة نصبه الفتحة الظّاهرة على آخره.','حال منصوبة وعلامة نصبها الفتحة الظّاهرة على آخره.','خبر كان منصوب وعلامة نصبه الفتحة الظّاهرة على آخره.'], correct:0},
+{q:'إعراب كلمة "ينسى" هو:', o:['فعل مضارع منصوب وعلامة نصبه حذف النّون لأنّه من الأفعال الخمسة.','فعل مضارع مرفوع وعلامة رفعه الضّمّة الظّاهرة على آخره.','فعل مضارع منصوب بـ: أنْ وعلامة نصبه الفتحة المقدّرة على الألف منع من ظهورها التّعذّر، والفاعل ضمير مستتر تقديره "هو".','فعل مضارع منصوب بـ: أنْ وعلامة نصبه حذف حرف العلّة، والفاعل ضمير مستتر تقديره "هو".'], correct:2},
+{q:'حدّد الاسم المقصور ممّا يلي:', o:['شكوى','ذكاء','غباء','المشتكي'], correct:0},
+{q:'حدّد الاسم المنقوص ممّا يلي:', o:['المشتكي','شكوى','أذكياء','أغبياء'], correct:0},
+{q:'حدّد الجملة التي تشتمل على فعل متعدّ إلى مفعولين فيما يلي:', o:['رأيت حصانا أبيضَ.','رأيت العلمَ نافعا.','رأيت أخاك البارحة.','رأيت السّارق هاربا.'], correct:1},
+{q:'ضمن الكلمات الآتية كلمة لا تمثّل "اسم تفضيل"، حدّدها:', o:['أجمل','أحسن','أعوَر','أطيب'], correct:2},
+{q:'أيُّ هذه الكلمات ليس اسم استفهام:', o:['مَنْ','هلْ','كيف','كمْ'], correct:1},
+{q:'أيُّ هذه الأنواع ليس من المشتقّات:', o:['اسم المكان','اسم التّفضيل','اسم الزّمان','الاسم الممدود'], correct:3},
+{q:'أيُّ هذه الأنواع ليس من المشتقّات:', o:['اسم المكان','اسم المفعول','اسم الفاعل','ظرف المكان'], correct:3},
+{q:'حدّد حرف الجزم ممّا يلي:', o:['أنْ','لمْ','لنْ','إذن'], correct:1},
+{q:'حدّد النّوع الذي لا ينتمي إلى المحسّنات البديعيّة:', o:['الطّباق','الجناس','السّجع','التّشبيه البليغ'], correct:3},
+{q:'حدّد النّوع الذي لا ينتمي إلى الصّور البيانيّة:', o:['الاستعارة','التّشبيه','الكناية','المقابلة'], correct:3},
+{q:'حدّد التّعبير الحقيقي من بين الجمل الآتية:', o:['حدّثنا التّاريخ عن عاقبة الظّالمين.','زرت صديقي الوفيّ البارحة.','يصطاد ذئب المدينة فرائسه بعناية.','زار صديقي على خانه من أصدقائه.'], correct:1},
+{q:'أيّ هذه الجمل تشتمل على استعارة تصريحيّة:', o:['اشتعل الرّأس شيبا.','قتلت البخل.','ضحك المشيب برأسه.','طلع البدر علينا.'], correct:3},
+{q:'حدّد نوع المحسّن البديعي الآتي: "الإنسان بآدابه، لا بثيابه"', o:['طباق','سجع','جناس','مقابلة'], correct:1},
+{q:'حدّد نوع المحسّن البديعي الآتي: "دارهم ما دمت في دارهم"', o:['طباق','سجع','جناس','مقابلة'], correct:2},
+{q:'حدّد نوع المحسّن البديعي الآتي: "وجعلنا اللّيل والنّهار آيتين"', o:['طباق','سجع','جناس','مقابلة'], correct:0},
+{q:'حدّد نوع المحسّن البديعي الآتي: "خير المال عين ساهرة لعين نائمة"', o:['طباق','سجع','جناس','مقابلة'], correct:0},
+{q:'حدّد الجملة التي أسلوبها خبري ممّا يلي:', o:['أشرقت الشّمس.','أدِّ واجبك!','ما أجمل الإحسان!','أين كتابك؟'], correct:0},
+{q:'أيّ الأساليب الإنشائيّة الآتية ليس طلبيا:', o:['الأمر','النّهي','الاستفهام','المدح'], correct:3},
+{q:'حدّد نوع وصيغة الأسلوب الإنشائي الآتي: "ليت الشّباب يعود"', o:['طلبي (تمنٍّ)','غير طلبي (ترجٍّ)','طلبي (ترجٍّ)','غير طلبي (تمنٍّ)'], correct:0},
+{q:'حدّد العنصر الدّخيل ممّا يلي من خصائص المقال العلمي:', o:['يغذّي عقولنا','يقدّم لنا حقائق علميّة','غنيّ بالصّور البيانيّة والمحسّنات البديعيّة','يستعمل المصطلحات العلميّة'], correct:2},
+{q:'اختر الكتابة الصّحيحة ممّا يلي:', o:['إهتمام','إقتحام','اهتمام','إستغلال'], correct:2},
+{q:'اختر الكتابة الصّحيحة ممّا يلي:', o:['مؤذنة','مأذنة','ميئذنة','مئذنة'], correct:3},
+{q:'النّمط الغالب في الخطب والنّصائح هو:', o:['الحوار','التّوجيه','السّرد','الحجاج'], correct:1},
+{q:'كيف كانت السّنة الثّالثة بالنّسبة لك؟', o:['ممتازة','جيدة','حسنة','صعبة'], correct:[0,1,2,3]},
+{q:'أيّ الميادين تصعب عليك؟', o:['فهم المنطوق','فهم المكتوب (النّصوص)','فهم المكتوب (القواعد)','إنتاج المكتوب (الوضعيات الإدماجيّة)'], correct:[0,1,2,3]},
+];
+
+/* ---------------- state ---------------- */
+let studentName = '';
+let current = 0;
+let score = 0;
+let answers = []; // {selected, correct}
+function qWeight(q){ return q.w || 1; }
+const scoredTotal = questions.reduce((sum,q)=> q.correct!==null ? sum + qWeight(q) : sum, 0);
+
+/* ---------------- audio ---------------- */
+let actx;
+function ensureAudio(){ if(!actx){ actx = new (window.AudioContext||window.webkitAudioContext)(); } }
+function playTone(freqs, dur=0.14, type='sine', gap=0.02){
+  ensureAudio();
+  let t = actx.currentTime;
+  freqs.forEach((f,i)=>{
+    const o = actx.createOscillator();
+    const g = actx.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.18, t+0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t); o.stop(t+dur+0.02);
+    t += dur+gap;
+  });
+}
+function soundCorrect(){ playTone([523.25,659.25,783.99],0.12,'sine',0.02); }
+function soundWrong(){ playTone([220,164.81],0.16,'sawtooth',0.03); }
+function soundClick(){ playTone([440],0.06,'triangle'); }
+function soundFinish(){ playTone([392,523.25,659.25,783.99,987.77],0.13,'sine',0.015); }
+
+/* ---------------- flow ---------------- */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz(){
+  const val = document.getElementById('nameInput').value.trim();
+  if(!val){ document.getElementById('nameErr').textContent = 'رجاء أدخل اسمك ولقبك للمتابعة'; return; }
+  studentName = val;
+  document.getElementById('passageBody').innerHTML = passageHTML;
+  current = 0; score = 0; answers = [];
+  showScreen('screenQuiz');
+  renderQuestion();
+}
+
+function togglePassage(){
+  document.getElementById('passageBody').classList.toggle('open');
+}
+
+function renderQuestion(){
+  const q = questions[current];
+  document.getElementById('qIndexLbl').textContent = current+1;
+  document.getElementById('qNumTag').textContent = current+1;
+  document.getElementById('scoreLive').textContent = '';
+  document.getElementById('progressFill').style.width = Math.round(((current)/questions.length)*100+2) + '%';
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('hintText').textContent = 'اختر إجابة واحدة';
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+  const circles = ['①','②','③','④'];
+  q.o.forEach((opt, idx)=>{
+    const div = document.createElement('div');
+    div.className = 'opt';
+    div.innerHTML = `<span class="num">${circles[idx]}</span><span>${opt}</span>`;
+    div.onclick = () => selectOption(idx);
+    wrap.appendChild(div);
+  });
+  document.getElementById('nextBtn').classList.remove('show');
+  document.getElementById('nextBtn').textContent = current===questions.length-1 ? 'تثبيت وإنهاء الاختبار ←' : 'تثبيت والتّالي ←';
+  currentSelection = null;
+}
+
+let currentSelection = null;
+
+function selectOption(idx){
+  currentSelection = idx;
+  const opts = document.querySelectorAll('#optionsWrap .opt');
+  opts.forEach((o,i)=>{
+    o.classList.toggle('selected', i===idx);
+  });
+  soundClick();
+  document.getElementById('nextBtn').classList.add('show');
+  document.getElementById('hintText').textContent = 'يمكنك تغيير اختيارك، ثمّ اضغط "تثبيت والتّالي"';
+}
+
+function nextQuestion(){
+  if(currentSelection===null) return;
+  answers.push({selected: currentSelection});
+  if(current < questions.length-1){
+    current++;
+    renderQuestion();
+  } else {
+    finishQuiz();
+  }
+}
+
+function isAnswerCorrect(q, selected){
+  if(q.correct===null || q.correct===undefined) return null;
+  if(Array.isArray(q.correct)) return q.correct.includes(selected);
+  return selected === q.correct;
+}
+
+function finishQuiz(){
+  soundFinish();
+  let sc = 0;
+  questions.forEach((q,i)=>{
+    if(isAnswerCorrect(q, answers[i].selected) === true) sc += qWeight(q);
+  });
+  const pct = Math.round((sc/scoredTotal)*100);
+  document.getElementById('scoreRing').style.setProperty('--pct', pct);
+  document.getElementById('scoreNum').textContent = sc;
+  document.getElementById('scoreTotalLbl').textContent = scoredTotal;
+  let note = '';
+  if(pct>=85) note = 'ملاحظة: نتيجة ممتازة! إتقان واضح للنّص والقواعد.';
+  else if(pct>=65) note = 'ملاحظة: نتيجة جيّدة، راجع بعض النّقاط مع الأستاذ لتتقن أكثر.';
+  else if(pct>=45) note = 'ملاحظة: نتيجة مقبولة، تحتاج إلى مراجعة إضافية مع الأستاذ.';
+  else note = 'ملاحظة: راجع النّص والقواعد جيّدا مع الأستاذ ثمّ أعد المحاولة.';
+  document.getElementById('resultMsg').textContent = note + ' اضغط الزّر أدناه لطباعة أو تحميل ورقة إجاباتك.';
+  showScreen('screenResult');
+}
+
+function buildSheetTable(start, end){
+  let html = '<table><thead><tr><th>السّؤال</th><th>①</th><th>②</th><th>③</th><th>④</th><th>النّقطة</th></tr></thead><tbody>';
+  for(let i=start; i<=end; i++){
+    const idx = i-1;
+    const a = answers[idx];
+    const q = questions[idx];
+    let row = `<tr><td class="sheet-qnum">${i}</td>`;
+    for(let c=0; c<4; c++){
+      const isSelected = a && a.selected === c;
+      row += `<td class="sheet-bubble${isSelected ? ' filled' : ''}">${isSelected ? '⬤' : '◯'}</td>`;
+    }
+    const res = isAnswerCorrect(q, a ? a.selected : null);
+    const pointText = res===null ? '—' : (res ? String(qWeight(q)) : '0');
+    row += `<td class="sheet-point">${pointText}</td>`;
+    row += '</tr>';
+    html += row;
+  }
+  html += '</tbody></table>';
+  return html;
+}
+
+function openAnswerSheet(){
+  document.getElementById('sheetName').textContent = studentName;
+  let correctCount = 0;
+  questions.forEach((q,i)=>{
+    if(isAnswerCorrect(q, answers[i].selected) === true) correctCount += qWeight(q);
+  });
+  const gradeOn50 = Math.round((correctCount/scoredTotal)*41*10)/10;
+  document.getElementById('sheetGrade').textContent = gradeOn50;
+  document.getElementById('sheetColRight').innerHTML = buildSheetTable(1,21);
+  document.getElementById('sheetColLeft').innerHTML = buildSheetTable(22,41);
+  showScreen('screenSheet');
+}
+
+function restartQuiz(){
+  document.getElementById('nameInput').value = '';
+  document.getElementById('nameErr').textContent = '';
+  showScreen('screenStart');
+}
+</script>
+</body>
+</html>
